@@ -19,10 +19,12 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
+import java.util.HashMap;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ProfileActivity extends AppCompatActivity {
-    private DatabaseReference usersRef, chatReqRef, contactsRef;
+    private DatabaseReference usersRef, chatReqRef, contactsRef, notificationRef;
     private FirebaseAuth mAuth;
 
     private String receiveUserID, senderUserId, currentState;
@@ -42,6 +44,7 @@ public class ProfileActivity extends AppCompatActivity {
         chatReqRef = FirebaseDatabase.getInstance().getReference().child("Requests");
         contactsRef = FirebaseDatabase.getInstance().getReference().child("Contacts");
         usersRef = FirebaseDatabase.getInstance().getReference().child("Users");
+        notificationRef = FirebaseDatabase.getInstance().getReference().child("Notifications");
 
         receiveUserID = getIntent().getExtras().get("visit_user_id").toString();
         senderUserId = mAuth.getCurrentUser().getUid();
@@ -273,9 +276,22 @@ public class ProfileActivity extends AppCompatActivity {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
                                     if(task.isSuccessful()) {
-                                        sendMessageRequestButton.setEnabled(true);
-                                        currentState = "request_sent";
-                                        sendMessageRequestButton.setText("Cancel Friend Request");
+                                        HashMap<String, String> chatNotif = new HashMap<>();
+
+                                        chatNotif.put("from", senderUserId);
+                                        chatNotif.put("type", "request");
+
+                                        notificationRef.child(receiveUserID).push().setValue(chatNotif)
+                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<Void> task) {
+                                                    if (task.isSuccessful()) {
+                                                        sendMessageRequestButton.setEnabled(true);
+                                                        currentState = "request_sent";
+                                                        sendMessageRequestButton.setText("Cancel Friend Request");
+                                                    }
+                                                }
+                                            });
                                     }
                                 }
                             });

@@ -28,12 +28,9 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,16 +50,13 @@ public class ChatActivity extends AppCompatActivity {
 
     private Toolbar chatToolbar;
 
-    private ImageButton sendMessageButton, sendFilesButton;
+    private ImageButton sendMessageButton;
     private EditText messageInputText;
 
     private final List<Messages> messagesList = new ArrayList<>();
     private LinearLayoutManager linearLayoutManager;
     private MessageAdapter messageAdapter;
     private RecyclerView userMessagesList;
-
-    private String saveCurrentTime, saveCurrentDate;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,15 +82,6 @@ public class ChatActivity extends AppCompatActivity {
                 SendMessage();
             }
         });
-
-//        sendFilesButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                SendFile();
-//            }
-//        });
-
-        DisplayLastSeen();
     }
 
     private void Initialize() {
@@ -115,7 +100,6 @@ public class ChatActivity extends AppCompatActivity {
         userLastSeen = (TextView) findViewById(R.id.custom_last_seen);
         userImage = (CircleImageView) findViewById(R.id.custom_profile_image);
         sendMessageButton = (ImageButton) findViewById(R.id.send_private_message_button);
-//        sendFilesButton = (ImageButton) findViewById(R.id.send_files_button);
         messageInputText = (EditText) findViewById(R.id.input_message);
 
         messageAdapter = new MessageAdapter(messagesList);
@@ -123,46 +107,6 @@ public class ChatActivity extends AppCompatActivity {
         linearLayoutManager = new LinearLayoutManager(this);
         userMessagesList.setLayoutManager(linearLayoutManager);
         userMessagesList.setAdapter(messageAdapter);
-
-        Calendar calendar = Calendar.getInstance();
-
-        SimpleDateFormat currentDate = new SimpleDateFormat("MMM dd, yyyy");
-        saveCurrentDate = currentDate.format(calendar.getTime());
-
-        SimpleDateFormat currentTime = new SimpleDateFormat("hh:mm a");
-        saveCurrentTime = currentTime.format(calendar.getTime());
-    }
-
-    private void DisplayLastSeen() {
-        rootRef.child("Users").child(messageSenderId)
-                .addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        if(dataSnapshot.child("User State").hasChild("state")) {
-                            String state = dataSnapshot.child("User State").child("state").getValue().toString();
-                            String date = dataSnapshot.child("User State").child("date").getValue().toString();
-                            String time = dataSnapshot.child("User State").child("time").getValue().toString();
-
-                            if (state.equals("online")) {
-                                userLastSeen.setText("online");
-                            }
-                            else {
-                                if (state.equals("offline")) {
-                                    userLastSeen.setText("Last seen: " + date + " " + time);
-                                }
-                            }
-
-                        }
-                        else {
-                            userLastSeen.setText("offline");
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                });
     }
 
     @Override
@@ -219,11 +163,7 @@ public class ChatActivity extends AppCompatActivity {
             Map myMap = new HashMap();
             myMap.put("message", message);
             myMap.put("type", "text");
-            myMap.put("to", messageReceiverId);
-            myMap.put("messageID", messagePushId);
-            myMap.put("time", saveCurrentTime);
-            myMap.put("date", saveCurrentDate);
-
+            myMap.put("from", messageSenderId);
 
             Map details = new HashMap();
             details.put(messageSenderRef + "/" + messagePushId, myMap);
@@ -241,10 +181,9 @@ public class ChatActivity extends AppCompatActivity {
                     messageInputText.setText("");
                 }
             });
+
+
+
         }
-    }
-
-    private void SendFile() {
-
     }
 }

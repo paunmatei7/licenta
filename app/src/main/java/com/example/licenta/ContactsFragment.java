@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -45,7 +44,7 @@ public class ContactsFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         contactsView =  inflater.inflate(R.layout.fragment_contacts, container, false);
-        
+
         Initialize();
 
         return contactsView;
@@ -86,24 +85,6 @@ public class ContactsFragment extends Fragment {
                             holder.userName.setText(userName);
                             holder.userStatus.setText(userStatus);
 
-                            if(dataSnapshot.child("User State").hasChild("state")) {
-                                String state = dataSnapshot.child("User State").child("state").getValue().toString();
-                                String date = dataSnapshot.child("User State").child("date").getValue().toString();
-                                String time = dataSnapshot.child("User State").child("time").getValue().toString();
-
-                                if (state.equals("online")) {
-                                    holder.onlineIcon.setVisibility(View.VISIBLE);
-                                }
-                                else {
-                                    if (state.equals("offline")) {
-                                        holder.onlineIcon.setVisibility(View.INVISIBLE);
-                                    }
-                                }
-                            }
-                            else {
-                                holder.onlineIcon.setVisibility(View.INVISIBLE);
-                            }
-
                             if (dataSnapshot.hasChild("image")) {
                                 String userImage = dataSnapshot.child("image").getValue().toString();
 
@@ -137,14 +118,11 @@ public class ContactsFragment extends Fragment {
     public static class ContactsViewHolder extends RecyclerView.ViewHolder {
         TextView userName, userStatus;
         CircleImageView profileImage;
-        ImageView onlineIcon;
-
         public ContactsViewHolder(@NonNull View itemView) {
             super(itemView);
             userName = itemView.findViewById(R.id.user_profile_username);
             userStatus = itemView.findViewById(R.id.user_status);
             profileImage = itemView.findViewById(R.id.users_profile_image);
-            onlineIcon = itemView.findViewById(R.id.user_online_status);
         }
 
     }

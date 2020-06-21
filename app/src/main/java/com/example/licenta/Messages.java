@@ -6,6 +6,17 @@ public class Messages {
     public Messages() {
     }
 
+    public Messages(String from, String message, String type, String to, String messageID, String time, String date, String name) {
+        this.from = from;
+        this.message = message;
+        this.type = type;
+        this.to = to;
+        this.messageID = messageID;
+        this.time = time;
+        this.date = date;
+        this.name = name;
+    }
+
     public String getFrom() {
         return from;
     }
@@ -67,17 +78,6 @@ public class Messages {
     }
 
     public void setName(String name) {
-        this.name = name;
-    }
-
-    public Messages(String from, String message, String type, String to, String messageID, String time, String date, String name) {
-        this.from = from;
-        this.message = message;
-        this.type = type;
-        this.to = to;
-        this.messageID = messageID;
-        this.time = time;
-        this.date = date;
         this.name = name;
     }
 }

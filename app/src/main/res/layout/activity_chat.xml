@@ -42,13 +42,12 @@
             android:id="@+id/input_message"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_toStartOf="@+id/send_private_message_button"
             android:hint="Message"
             android:padding="15dp"
             android:maxLines="5"
             android:layout_toEndOf="@+id/send_files_button"
-            android:layout_toStartOf="@+id/send_private_message_button"
             >
-
         </EditText>
 
         <ImageButton
@@ -57,7 +56,8 @@
             android:layout_height="50dp"
             android:layout_alignParentEnd="true"
             android:src="@drawable/send_message"
-            android:background="@color/cardview_light_background">
+            android:background="@color/cardview_light_background"
+            android:backgroundTint="@android:color/white">
         </ImageButton>
 
     </RelativeLayout>

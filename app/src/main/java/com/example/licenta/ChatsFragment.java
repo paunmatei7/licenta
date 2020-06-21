@@ -76,9 +76,6 @@ public class ChatsFragment extends Fragment {
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                         if (dataSnapshot.exists()) {
-                            final String name = dataSnapshot.child("name").getValue().toString();
-                            final String status = dataSnapshot.child("status").getValue().toString();
-
                             if (dataSnapshot.hasChild("image")) {
                                 retImage[0] = dataSnapshot.child("image").getValue().toString();
 
@@ -86,8 +83,29 @@ public class ChatsFragment extends Fragment {
 
                             }
 
+                            final String name = dataSnapshot.child("name").getValue().toString();
+                            final String status = dataSnapshot.child("status").getValue().toString();
+
                             holder.userName.setText(name);
-                            holder.userStatus.setText("Last Seen: " + "\n" + "Date: " + "Time: ");
+
+                            if(dataSnapshot.child("User State").hasChild("state")) {
+                                String state = dataSnapshot.child("User State").child("state").getValue().toString();
+                                String date = dataSnapshot.child("User State").child("date").getValue().toString();
+                                String time = dataSnapshot.child("User State").child("time").getValue().toString();
+
+                                if (state.equals("online")) {
+                                    holder.userStatus.setText("online");
+                                }
+                                else {
+                                    if (state.equals("offline")) {
+                                        holder.userStatus.setText("Last seen: " + date + " " + time);
+                                    }
+                                }
+
+                            }
+                            else {
+                                holder.userStatus.setText("offline");
+                            }
 
                             holder.itemView.setOnClickListener(new View.OnClickListener() {
                                 @Override

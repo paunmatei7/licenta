@@ -42,7 +42,7 @@ public class SettingsActivity extends AppCompatActivity {
     private DatabaseReference rootRef;
 
     private Button updateAccountSettings;
-    private EditText userName, userStatus;
+    private EditText userName, userStatus, userUniversity;
     private CircleImageView userProfileImage;
     private String currentUserId;
 
@@ -93,6 +93,7 @@ public class SettingsActivity extends AppCompatActivity {
         updateAccountSettings = (Button) findViewById(R.id.update_settings_button);
         userName = (EditText) findViewById(R.id.settings_user_name);
         userStatus = (EditText) findViewById(R.id.settings_profile_status);
+        userUniversity = (EditText) findViewById(R.id.settings_university);
         userProfileImage = (CircleImageView) findViewById(R.id.settings_profile_image);
         settingsToolbar = (Toolbar) findViewById(R.id.settings_toolbar);
 
@@ -128,12 +129,12 @@ public class SettingsActivity extends AppCompatActivity {
                 Uri resultUri = result.getUri();
 
                 final StorageReference filePath = userProfileImagesRef.child(currentUserId + ".jpg");
-                System.out.println(filePath);
 
                 filePath.putFile(resultUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
                         if (task.isSuccessful()) {
+                            loadingBar.dismiss();
                             Toast.makeText(SettingsActivity.this, "Profile Image Uploaded Successfully", Toast.LENGTH_SHORT).show();
 
                             StorageReference storageRef = FirebaseStorage.getInstance().getReference()
@@ -154,23 +155,29 @@ public class SettingsActivity extends AppCompatActivity {
                                 }
                             });
 
+                            filePath.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                @Override
+                                public void onSuccess(Uri uri) {
+                                    rootRef.child("Users").child(currentUserId).child("image").setValue(uri.toString());
+                                }
+                            });
 
-                            rootRef.child("Users").child(currentUserId).child("image")
-                                    .setValue(downloadUrl[0])
-                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<Void> task) {
-                                            if (task.isSuccessful()) {
-                                                Toast.makeText(SettingsActivity.this, "Image saved in DB!", Toast.LENGTH_SHORT).show();
-                                                loadingBar.dismiss();
-                                            }
-                                            else {
-                                                String message = task.getException().toString();
-                                                Toast.makeText(SettingsActivity.this, "Error: " + message, Toast.LENGTH_SHORT).show();
-                                                loadingBar.dismiss();
-                                            }
-                                        }
-                                    });
+//                            rootRef.child("Users").child(currentUserId).child("image")
+//                                    .setValue(resultUri)
+//                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+//                                        @Override
+//                                        public void onComplete(@NonNull Task<Void> task) {
+//                                            if (task.isSuccessful()) {
+//                                                Toast.makeText(SettingsActivity.this, "Image saved in DB!", Toast.LENGTH_SHORT).show();
+//                                                loadingBar.dismiss();
+//                                            }
+//                                            else {
+//                                                String message = task.getException().toString();
+//                                                Toast.makeText(SettingsActivity.this, "Error: " + message, Toast.LENGTH_SHORT).show();
+//                                                loadingBar.dismiss();
+//                                            }
+//                                        }
+//                                    });
                         }
                         else {
                             String message = task.getException().toString();
@@ -188,6 +195,11 @@ public class SettingsActivity extends AppCompatActivity {
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if ((dataSnapshot.exists()) && (dataSnapshot.hasChild("university"))) {
+                            String retrieveUniversity = dataSnapshot.child("university").getValue().toString();
+                            userUniversity.setText(retrieveUniversity);
+                        }
+
                         if ((dataSnapshot.exists()) && (dataSnapshot.hasChild("name") && (dataSnapshot.hasChild("image")))) {
                             String retrieveUserName = dataSnapshot.child("name").getValue().toString();
                             String retrieveUserStatus = dataSnapshot.child("status").getValue().toString();
@@ -222,6 +234,7 @@ public class SettingsActivity extends AppCompatActivity {
     private void UpdateSettings() {
         String setUserName = userName.getText().toString();
         String setUserStatus = userStatus.getText().toString();
+        String setUserUniversity = userUniversity.getText().toString();
 
         if(TextUtils.isEmpty(setUserName)) {
             Toast.makeText(this, "Please set username", Toast.LENGTH_SHORT).show();
@@ -235,6 +248,7 @@ public class SettingsActivity extends AppCompatActivity {
                 profileMap.put("uid", currentUserId);
                 profileMap.put("name", setUserName);
                 profileMap.put("status", setUserStatus);
+                profileMap.put("university", setUserUniversity);
                 rootRef.child("Users").child(currentUserId).updateChildren(profileMap)
                         .addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override

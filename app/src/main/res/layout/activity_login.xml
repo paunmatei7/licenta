@@ -19,7 +19,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="250dp"
                 android:scaleType="fitCenter"
-                android:src="@drawable/login_photo" />
+                android:src="@drawable/login_photo2" />
 
             <EditText
                 android:id="@+id/login_email"

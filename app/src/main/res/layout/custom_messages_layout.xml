@@ -6,8 +6,8 @@
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/private_message_image"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:src="@drawable/profile_image"
         android:layout_marginTop="10dp">
     </de.hdodenhof.circleimageview.CircleImageView>
@@ -27,6 +27,26 @@
         android:textColor="@android:color/black">
     </TextView>
 
+    <ImageView
+        android:id="@+id/message_sender_image_view"
+        android:layout_width="150dp"
+        android:layout_height="30dp"
+        android:layout_alignParentEnd="true"
+        android:layout_margin="5dp"
+        android:scaleType="centerCrop"
+        >
+    </ImageView>
+
+    <ImageView
+        android:id="@+id/message_receiver_image_view"
+        android:layout_width="150dp"
+        android:layout_height="30dp"
+        android:layout_alignParentStart="true"
+        android:layout_margin="5dp"
+        android:scaleType="centerCrop"
+        >
+    </ImageView>
+
     <TextView
         android:id="@+id/private_message_sender"
         android:layout_width="wrap_content"
@@ -41,25 +61,5 @@
         android:textStyle="bold"
         android:textColor="@android:color/black">
     </TextView>
-
-    <ImageView
-        android:id="@+id/message_sender_image_view"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:layout_alignParentEnd="true"
-        android:layout_margin="5dp"
-        android:scaleType="centerCrop"
-        >
-    </ImageView>
-
-    <ImageView
-        android:id="@+id/message_receiver_image_view"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-         android:layout_alignParentStart="true"
-        android:layout_margin="5dp"
-        android:scaleType="centerCrop"
-        >
-    </ImageView>
 
 </RelativeLayout>

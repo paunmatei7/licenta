@@ -7,6 +7,7 @@
     android:background="@color/colorAccent"
     tools:context=".MainActivity">
 
+
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/AppBarLayout"
         android:layout_width="match_parent"
@@ -14,13 +15,13 @@
         <include
             android:id="@+id/main_page_toolbar"
             layout="@layout/app_bar_layout">
-
         </include>
         
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/main_tabs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:tabTextAppearance="@style/MyCustomTabText"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
         </com.google.android.material.tabs.TabLayout>

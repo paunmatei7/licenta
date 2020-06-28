@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.renderscript.Sampler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -98,9 +99,11 @@ public class RequestsFragment extends Fragment {
                                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                         final String requestUserName = dataSnapshot.child("name").getValue().toString();
                                         final String requestUserStatus = dataSnapshot.child("status").getValue().toString();
+                                        final String requestUserUniversity = dataSnapshot.child("university").getValue().toString();
 
                                         holder.username.setText(requestUserName);
                                         holder.userStatus.setText(requestUserStatus);
+                                        holder.userUniversity.setText(requestUserUniversity);
 
                                         if (dataSnapshot.hasChild("image")) {
                                             final String requestUserImage = dataSnapshot.child("image").getValue().toString();
@@ -173,7 +176,7 @@ public class RequestsFragment extends Fragment {
                                                                                             @Override
                                                                                             public void onComplete(@NonNull Task<Void> task) {
                                                                                                 if (task.isSuccessful()) {
-                                                                                                    Toast.makeText(getContext(), "You decline de friend request from" + requestUserName, Toast.LENGTH_SHORT).show();
+                                                                                                    Toast.makeText(getContext(), "You decline the friend request from" + requestUserName, Toast.LENGTH_SHORT).show();
                                                                                                 }
                                                                                             }
                                                                                         });
@@ -186,6 +189,28 @@ public class RequestsFragment extends Fragment {
                                                 builder.show();
                                             }
                                         });
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                    }
+                                });
+                            }
+                            else {
+                                usersRef.child(listUserId).addValueEventListener(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                        holder.username.setVisibility(View.INVISIBLE);
+                                        holder.userStatus.setVisibility(View.INVISIBLE);
+                                        holder.userUniversity.setVisibility(View.INVISIBLE);
+
+                                        if (dataSnapshot.hasChild("image")) {
+                                            final String requestUserImage = dataSnapshot.child("image").getValue().toString();
+
+                                            Picasso.get().load(requestUserImage).into(holder.profileImage);
+
+                                        }
                                     }
 
                                     @Override
@@ -207,6 +232,7 @@ public class RequestsFragment extends Fragment {
             @NonNull
             @Override
             public RequestViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                System.out.println(viewType);
                 View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.users_display_layout, parent, false);
 
                 RequestViewHolder holder = new RequestViewHolder(view);
@@ -220,7 +246,7 @@ public class RequestsFragment extends Fragment {
 
     public static class RequestViewHolder extends RecyclerView.ViewHolder {
 
-        TextView username, userStatus;
+        TextView username, userStatus, userUniversity;
         CircleImageView profileImage;
         Button acceptButton, declineButton;
 
@@ -229,6 +255,7 @@ public class RequestsFragment extends Fragment {
             username = itemView.findViewById(R.id.user_profile_username);
             userStatus = itemView.findViewById(R.id.user_status);
             profileImage = itemView.findViewById(R.id.users_profile_image);
+            userUniversity = itemView.findViewById(R.id.user_university);
             acceptButton = itemView.findViewById(R.id.request_accept_button);
             declineButton = itemView.findViewById(R.id.request_cancel_button);
         }

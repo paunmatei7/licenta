@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -69,7 +70,7 @@ public class ContactsFragment extends Fragment {
                 .setQuery(contactsRef, Contacts.class)
                 .build();
 
-        FirebaseRecyclerAdapter <Contacts, ContactsViewHolder> adapter = new FirebaseRecyclerAdapter<Contacts, ContactsViewHolder>(options) {
+        final  FirebaseRecyclerAdapter <Contacts, ContactsViewHolder> adapter = new FirebaseRecyclerAdapter<Contacts, ContactsViewHolder>(options) {
             @Override
             protected void onBindViewHolder(@NonNull final ContactsViewHolder holder, int position, @NonNull Contacts model) {
                 String userIds = getRef(position).getKey();
@@ -82,8 +83,29 @@ public class ContactsFragment extends Fragment {
                             String userName = dataSnapshot.child("name").getValue().toString();
                             String userStatus = dataSnapshot.child("status").getValue().toString();
 
+                            String userUniversity = dataSnapshot.child("university").getValue().toString();
+
                             holder.userName.setText(userName);
                             holder.userStatus.setText(userStatus);
+                            holder.userUniversity.setText(userUniversity);
+
+                            if (dataSnapshot.child("User State").hasChild("state")) {
+                                String state = dataSnapshot.child("User State").child("state").getValue().toString();
+                                String date = dataSnapshot.child("User State").child("date").getValue().toString();
+                                String time = dataSnapshot.child("User State").child("time").getValue().toString();
+
+                                if (state.equals("online")) {
+                                    holder.onlineIcon.setVisibility(View.VISIBLE);
+                                }
+                                else {
+                                    if (state.equals("offline")) {
+                                        holder.onlineIcon.setVisibility(View.INVISIBLE);
+                                    }
+                                }
+                            }
+                            else {
+                                holder.onlineIcon.setVisibility(View.INVISIBLE);
+                            }
 
                             if (dataSnapshot.hasChild("image")) {
                                 String userImage = dataSnapshot.child("image").getValue().toString();
@@ -116,13 +138,17 @@ public class ContactsFragment extends Fragment {
     }
 
     public static class ContactsViewHolder extends RecyclerView.ViewHolder {
-        TextView userName, userStatus;
+        TextView userName, userStatus, userUniversity;
         CircleImageView profileImage;
+        ImageView onlineIcon;
+
         public ContactsViewHolder(@NonNull View itemView) {
             super(itemView);
             userName = itemView.findViewById(R.id.user_profile_username);
             userStatus = itemView.findViewById(R.id.user_status);
             profileImage = itemView.findViewById(R.id.users_profile_image);
+            userUniversity  = itemView.findViewById(R.id.user_university);
+            onlineIcon = itemView.findViewById(R.id.user_online_status);
         }
 
     }

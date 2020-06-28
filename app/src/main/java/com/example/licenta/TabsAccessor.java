@@ -28,6 +28,9 @@ public class TabsAccessor extends FragmentStatePagerAdapter {
             case 3:
                 RequestsFragment requestsFragment = new RequestsFragment();
                 return requestsFragment;
+            case 4:
+                MapFragment mapFragment = new MapFragment();
+                return mapFragment;
             default:
                 return null;
         }
@@ -35,7 +38,7 @@ public class TabsAccessor extends FragmentStatePagerAdapter {
 
     @Override
     public int getCount() {
-        return 4;
+        return 5;
     }
 
     @Nullable
@@ -49,7 +52,9 @@ public class TabsAccessor extends FragmentStatePagerAdapter {
             case 2:
                 return "Contacts";
             case 3:
-                return "Friend Requests";
+                return "Requests";
+            case 4:
+                return "Map";
             default:
                 return null;
         }

@@ -78,6 +78,7 @@ public class ChatsFragment extends Fragment {
                         if (dataSnapshot.exists()) {
                             final String name = dataSnapshot.child("name").getValue().toString();
                             final String status = dataSnapshot.child("status").getValue().toString();
+                            final String university = dataSnapshot.child("university").getValue().toString();
 
                             if (dataSnapshot.hasChild("image")) {
                                 retImage[0] = dataSnapshot.child("image").getValue().toString();
@@ -87,7 +88,26 @@ public class ChatsFragment extends Fragment {
                             }
 
                             holder.userName.setText(name);
-                            holder.userStatus.setText("Last Seen: " + "\n" + "Date: " + "Time: ");
+                            holder.userUniversity.setText(university);
+
+
+                            if (dataSnapshot.child("User State").hasChild("state")) {
+                                String state = dataSnapshot.child("User State").child("state").getValue().toString();
+                                String date = dataSnapshot.child("User State").child("date").getValue().toString();
+                                String time = dataSnapshot.child("User State").child("time").getValue().toString();
+
+                                if (state.equals("online")) {
+                                    holder.userStatus.setText("online");
+                                }
+                                else {
+                                    if (state.equals("offline")) {
+                                        holder.userStatus.setText("Last Seen: " + date + " " + time);
+                                    }
+                                }
+                            }
+                            else {
+                                holder.userStatus.setText("offline");
+                            }
 
                             holder.itemView.setOnClickListener(new View.OnClickListener() {
                                 @Override
@@ -125,13 +145,14 @@ public class ChatsFragment extends Fragment {
     }
 
     public static class ChatsViewHolder extends RecyclerView.ViewHolder{
-        TextView userName, userStatus;
+        TextView userName, userStatus, userUniversity;
         CircleImageView profileImage;
 
         public ChatsViewHolder(@NonNull View itemView) {
             super(itemView);
             userName = itemView.findViewById(R.id.user_profile_username);
             userStatus = itemView.findViewById(R.id.user_status);
+            userUniversity = itemView.findViewById(R.id.user_university);
             profileImage = itemView.findViewById(R.id.users_profile_image);
         }
     }

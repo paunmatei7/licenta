@@ -30,13 +30,13 @@
         android:background="@color/cardview_light_background"
         android:orientation="horizontal">
 
-        <ImageButton
-            android:id="@+id/send_files_button"
-            android:layout_width="60dp"
-            android:layout_height="50dp"
-            android:layout_alignParentStart="true"
-            android:src="@drawable/send_message"
-            android:background="@color/cardview_light_background"/>
+<!--        <ImageButton-->
+<!--            android:id="@+id/send_files_button"-->
+<!--            android:layout_width="60dp"-->
+<!--            android:layout_height="50dp"-->
+<!--            android:layout_alignParentStart="true"-->
+<!--            android:src="@drawable/send_message"-->
+<!--            android:background="@color/cardview_light_background"/>-->
 
         <EditText
             android:id="@+id/input_message"
@@ -46,9 +46,9 @@
             android:hint="Message"
             android:padding="15dp"
             android:maxLines="5"
-            android:layout_toEndOf="@+id/send_files_button"
             >
         </EditText>
+<!--        android:layout_toEndOf="@+id/send_files_button"-->
 
         <ImageButton
             android:id="@+id/send_private_message_button"

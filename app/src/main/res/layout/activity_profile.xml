@@ -35,7 +35,7 @@
         android:id="@+id/visit_user_status"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="statusul asta e misto"
+        android:hint="Write your status"
         android:layout_below="@id/visit_user_name"
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"

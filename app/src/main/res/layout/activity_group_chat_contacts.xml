@@ -4,26 +4,26 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".FindFriendsActivity">
+    tools:context=".GroupChatContactsActivity">
 
     <include
-        android:id="@+id/find_friends_toolbar"
+        android:id="@+id/group_chat_contacts_toolbar"
         layout = "@layout/app_bar_layout"/>
 
     <SearchView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/find_friends_toolbar"
+        android:layout_below="@id/group_chat_contacts_toolbar"
         android:showAsAction="always"
-        android:id="@+id/search_view_find_friends"
+        android:id="@+id/search_view_group_contacts"
         android:queryHint="Search Here"
         android:iconifiedByDefault="false">
 
     </SearchView>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/find_friends_recycler_list"
-        android:layout_below="@id/search_view_find_friends"
+        android:id="@+id/group_chat_contacts_recycler_list"
+        android:layout_below="@+id/search_view_group_contacts"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentStart="true"

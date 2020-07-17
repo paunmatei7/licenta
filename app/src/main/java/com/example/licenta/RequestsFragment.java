@@ -198,26 +198,26 @@ public class RequestsFragment extends Fragment {
                                 });
                             }
                             else {
-                                usersRef.child(listUserId).addValueEventListener(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                        holder.username.setVisibility(View.INVISIBLE);
-                                        holder.userStatus.setVisibility(View.INVISIBLE);
-                                        holder.userUniversity.setVisibility(View.INVISIBLE);
-
-                                        if (dataSnapshot.hasChild("image")) {
-                                            final String requestUserImage = dataSnapshot.child("image").getValue().toString();
-
-                                            Picasso.get().load(requestUserImage).into(holder.profileImage);
-
-                                        }
-                                    }
-
-                                    @Override
-                                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                    }
-                                });
+//                                usersRef.child(listUserId).addValueEventListener(new ValueEventListener() {
+//                                    @Override
+//                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                                        holder.username.setVisibility(View.INVISIBLE);
+//                                        holder.userStatus.setVisibility(View.INVISIBLE);
+//                                        holder.userUniversity.setVisibility(View.INVISIBLE);
+//
+//                                        if (dataSnapshot.hasChild("image")) {
+//                                            final String requestUserImage = dataSnapshot.child("image").getValue().toString();
+//
+//                                            Picasso.get().load(requestUserImage).into(holder.profileImage);
+//
+//                                        }
+//                                    }
+//
+//                                    @Override
+//                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//                                    }
+//                                });
                             }
                         }
                     }

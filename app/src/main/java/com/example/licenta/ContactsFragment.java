@@ -1,5 +1,6 @@
 package com.example.licenta;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -72,7 +73,7 @@ public class ContactsFragment extends Fragment {
 
         final  FirebaseRecyclerAdapter <Contacts, ContactsViewHolder> adapter = new FirebaseRecyclerAdapter<Contacts, ContactsViewHolder>(options) {
             @Override
-            protected void onBindViewHolder(@NonNull final ContactsViewHolder holder, int position, @NonNull Contacts model) {
+            protected void onBindViewHolder(@NonNull final ContactsViewHolder holder, final int position, @NonNull Contacts model) {
                 String userIds = getRef(position).getKey();
 
                 usersRef.child(userIds).addValueEventListener(new ValueEventListener() {
@@ -112,6 +113,7 @@ public class ContactsFragment extends Fragment {
 
                                 Picasso.get().load(userImage).placeholder(R.drawable.profile_image).into(holder.profileImage);
                             }
+
                         }
                     }
 
@@ -120,6 +122,19 @@ public class ContactsFragment extends Fragment {
 
                     }
                 });
+
+                holder.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String visit_user_id = getRef(position).getKey();
+
+                        Intent profileIntent = new Intent(getContext(), ProfileActivity.class);
+                        profileIntent.putExtra("visit_user_id", visit_user_id);
+                        profileIntent.putExtra("isGroupChatContacts", 0);
+                        startActivity(profileIntent);
+                    }
+                });
+
             }
 
             @NonNull

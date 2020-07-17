@@ -15,6 +15,7 @@ import android.widget.Button;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.firebase.auth.FirebaseAuth;
 
 
 /**
@@ -25,6 +26,9 @@ public class MapFragment extends Fragment {
 
     Button buttonAccess;
     View mapViewFrag;
+    private FirebaseAuth myAuth;
+
+    String currentUserId;
 
 
     @Override
@@ -32,6 +36,9 @@ public class MapFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         mapViewFrag = inflater.inflate(R.layout.fragment_map, container, false);
+        myAuth = FirebaseAuth.getInstance();
+
+        currentUserId = myAuth.getCurrentUser().getUid();
 
         buttonAccess = (Button) mapViewFrag.findViewById(R.id.button_location);
 
@@ -39,6 +46,7 @@ public class MapFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent mapIntent = new Intent(getContext(), MapActivity.class);
+                mapIntent.putExtra("visit_user_id", currentUserId);
 
                 startActivity(mapIntent);
             }

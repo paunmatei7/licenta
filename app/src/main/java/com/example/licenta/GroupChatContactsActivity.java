@@ -23,7 +23,7 @@ import com.squareup.picasso.Picasso;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class FindFriendsActivity extends AppCompatActivity {
+public class GroupChatContactsActivity extends AppCompatActivity {
 
     private Toolbar mToolbar;
     private RecyclerView findFriendsRecycleList;
@@ -31,11 +31,13 @@ public class FindFriendsActivity extends AppCompatActivity {
 
     private DatabaseReference usersRef;
 
+    String currentGroupName;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_find_friends);
+        setContentView(R.layout.activity_group_chat_contacts);
 
         usersRef = FirebaseDatabase.getInstance().getReference().child("Users");
 
@@ -43,18 +45,20 @@ public class FindFriendsActivity extends AppCompatActivity {
     }
 
     private void Initialize() {
-        mToolbar = (Toolbar) findViewById(R.id.find_friends_toolbar);
+        mToolbar = (Toolbar) findViewById(R.id.group_chat_contacts_toolbar);
         setSupportActionBar(mToolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setTitle("Find Friends");
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setTitle("Members");
 
-        findFriendsRecycleList = (RecyclerView) findViewById(R.id.find_friends_recycler_list);
+        findFriendsRecycleList = (RecyclerView) findViewById(R.id.group_chat_contacts_recycler_list);
         findFriendsRecycleList.setLayoutManager(new LinearLayoutManager(this));
 
         FirebaseRecyclerOptions<Contacts> options = new FirebaseRecyclerOptions.Builder<Contacts>().setQuery(usersRef, Contacts.class).build();
 
-        searchView = (SearchView) findViewById(R.id.search_view_find_friends);
+        searchView = (SearchView) findViewById(R.id.search_view_group_contacts);
+
+        currentGroupName = getIntent().getExtras().get("groupName").toString();
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -97,9 +101,10 @@ public class FindFriendsActivity extends AppCompatActivity {
                     public void onClick(View v) {
                         String visit_user_id = getRef(position).getKey();
 
-                        Intent profileIntent = new Intent(FindFriendsActivity.this, ProfileActivity.class);
+                        Intent profileIntent = new Intent(GroupChatContactsActivity.this, ProfileActivity.class);
                         profileIntent.putExtra("visit_user_id", visit_user_id);
-                        profileIntent.putExtra("isGroupChatContacts", 0);
+                        profileIntent.putExtra("groupName", currentGroupName);
+                        profileIntent.putExtra("isGroupChatContacts", 1);
                         startActivity(profileIntent);
                     }
                 });
@@ -135,9 +140,10 @@ public class FindFriendsActivity extends AppCompatActivity {
                     public void onClick(View v) {
                         String visit_user_id = getRef(position).getKey();
 
-                        Intent profileIntent = new Intent(FindFriendsActivity.this, ProfileActivity.class);
+                        Intent profileIntent = new Intent(GroupChatContactsActivity.this, ProfileActivity.class);
                         profileIntent.putExtra("visit_user_id", visit_user_id);
-                        profileIntent.putExtra("isGroupChatContacts", 0);
+                        profileIntent.putExtra("groupName", currentGroupName);
+                        profileIntent.putExtra("isGroupChatContacts", 1);
                         startActivity(profileIntent);
                     }
                 });
@@ -181,6 +187,8 @@ public class FindFriendsActivity extends AppCompatActivity {
             userStatus.setText(model.getStatus());
             userUniversity.setText(model.getUniversity());
             Picasso.get().load(model.getImage()).placeholder(R.drawable.profile_image).into(profileImage);
+
+
         }
     }
 }

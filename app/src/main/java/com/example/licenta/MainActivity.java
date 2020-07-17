@@ -56,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
         thisUser = myAuth.getCurrentUser();
         rootRef = FirebaseDatabase.getInstance().getReference();
 
+
         myToolbar = (Toolbar) findViewById(R.id.main_page_toolbar);
         setSupportActionBar(myToolbar);
         getSupportActionBar().setTitle("Students Chat");
@@ -224,6 +225,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void CreateNewGroup(final String groupName) {
+        currentUserId = myAuth.getCurrentUser().getUid();
         rootRef.child("Groups").child(groupName).setValue("")
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
@@ -233,5 +235,6 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                 });
+        rootRef.child("GroupsBans").child(groupName).child("admin").setValue(currentUserId);
     }
 }

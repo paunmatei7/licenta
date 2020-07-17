@@ -7,6 +7,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -44,7 +45,7 @@ import java.util.List;
      private final List<Messages> messagesList = new ArrayList<>();
      private MessageAdapter messageAdapter;
 
-     private DatabaseReference rootRef, usersRef, groupNameRef, groupMessageKeyRef;
+     private DatabaseReference rootRef, usersRef, groupNameRef, groupMessageKeyRef, groupBansNameRef;
 
      private String currentGroupName, currentUserId, currentUserName, currentDate, currentTime;
 
@@ -54,7 +55,6 @@ import java.util.List;
         setContentView(R.layout.activity_group_chat);
 
         currentGroupName = getIntent().getExtras().get("groupName").toString();
-        Toast.makeText(GroupChatActivity.this, currentGroupName, Toast.LENGTH_SHORT).show();
 
         myAuth = FirebaseAuth.getInstance();
 
@@ -62,23 +62,56 @@ import java.util.List;
         rootRef = FirebaseDatabase.getInstance().getReference();
         usersRef = rootRef.child("Users");
         groupNameRef = rootRef.child("Groups").child(currentGroupName);
-
+        groupBansNameRef = rootRef.child("GroupsBans").child(currentGroupName);
 
         InitializeFields();
         GetUserInfo();
-
-        sendMessageButton.setOnClickListener(new View.OnClickListener() {
+        
+        myToolbar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SendMessageInfoToDatabase();
-                userMessageInput.setText("");
+                Intent groupChatContactsIntent = new Intent(GroupChatActivity.this, GroupChatContactsActivity.class);
+                groupChatContactsIntent.putExtra("groupName", currentGroupName);
+                startActivity(groupChatContactsIntent);
             }
         });
+
+         rootRef.child("GroupsBans").child(currentGroupName).addValueEventListener(new ValueEventListener() {
+             @Override
+             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                 String currentBanState;
+                 if (dataSnapshot.hasChild(currentUserId)) {
+                     currentBanState= dataSnapshot.child(currentUserId).getValue().toString();
+                 }
+                 else {
+                     currentBanState = "unbanned";
+                 }
+                 if(currentBanState.equals("unbanned")) {
+                     sendMessageButton.setOnClickListener(new View.OnClickListener() {
+                         @Override
+                         public void onClick(View v) {
+                             SendMessageInfoToDatabase();
+                             userMessageInput.setText("");
+                         }
+                     });
+                 }
+                 else{
+                     sendMessageButton.setVisibility(View.INVISIBLE);
+                 }
+             }
+
+             @Override
+             public void onCancelled(@NonNull DatabaseError databaseError) {
+
+             }
+         });
     }
 
      @Override
      protected void onStart() {
          super.onStart();
+
+         messagesList.clear();
 
          groupNameRef.addChildEventListener(new ChildEventListener() {
                      @Override
